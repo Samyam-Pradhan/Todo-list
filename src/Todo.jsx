@@ -5,7 +5,7 @@ import "./components/Todo.css";
 export const Todo = () =>{
 
     const [inputValue, setInputValue] = useState("");
-    const [task, setTaask] = useState([]);
+    const [task, setTask] = useState([]);
 
     const handleInputChange = (value) =>{
         setInputValue(value);
@@ -20,12 +20,22 @@ export const Todo = () =>{
             setInputValue("");
             return;
         }
-        setTaask((prevTask) => [...prevTask, inputValue]);
+        setTask((prevTask) => [...prevTask, inputValue]);
 
         setInputValue("");
     }
 
-   
+    const handleDeleteTodo = (value) =>{
+        console.log(task);
+        console.log(value);
+        const updatedTask = task.filter((curTask)=> curTask !== value);
+        setTask(updatedTask);
+        
+    }
+
+    const handleClearAll = () =>{
+        setTask([]);
+    }
     return(
         <section className="todo-container">
             <header>
@@ -51,13 +61,16 @@ export const Todo = () =>{
                                 return <li key={index} className="todo-item">
                                     <span>{curTask}</span>
                                     <button className="check-btn"><FaCheck /></button>
-                                    <button className="delete-btn"><MdDelete /></button>
+                                    <button className="delete-btn" onClick={() => handleDeleteTodo(curTask)}><MdDelete /></button>
                                     
                                 </li>
                             })
                         }
                     </ul>
                 </section>
+            </section>
+            <section>
+                <button onClick={handleClearAll} className="clear-all-btn">Clear All</button>
             </section>
         </section>
     )
