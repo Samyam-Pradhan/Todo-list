@@ -5,7 +5,11 @@ import "./components/Todo.css";
 
 export const Todo = () => {
     const [inputValue, setInputValue] = useState("");
-    const [task, setTask] = useState([]);
+    const [task, setTask] = useState(()=>{
+        const rawTodo = localStorage.getItem("reactTodo");
+        if(!rawTodo) return;
+        return JSON.parse(rawTodo);
+    });
 
     // Handle input change
     const handleInputChange = (value) => {
@@ -50,6 +54,9 @@ export const Todo = () => {
     const handleClearAll = () => {
         setTask([]);
     };
+
+    //storing data in local storage
+    localStorage.setItem("reactTodo", JSON.stringify(task));
 
     return (
         <section className="todo-container">
