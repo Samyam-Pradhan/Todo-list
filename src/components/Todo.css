@@ -172,6 +172,12 @@ ul {
   box-shadow: none;
 }
 
+.checked {
+  text-decoration: line-through;
+  color: gray;
+}
+
+
 /* Animation for new items */
 @keyframes fadeIn {
   from {

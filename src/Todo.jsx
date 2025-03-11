@@ -1,42 +1,57 @@
-import { useState } from "react"
+import { useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 import "./components/Todo.css";
-export const Todo = () =>{
 
+export const Todo = () => {
     const [inputValue, setInputValue] = useState("");
     const [task, setTask] = useState([]);
 
-    const handleInputChange = (value) =>{
+    // Handle input change
+    const handleInputChange = (value) => {
         setInputValue(value);
-    }
+    };
 
-    const handleFormSubmit = (event) =>{
-        event.preventDefault();
+    // Handle form submission
+    const handleFormSubmit = (event) => {
+        event.preventDefault(); // Prevent page reload
 
-        if(!inputValue) return;
+        if (!inputValue.trim()) return; // Prevent empty tasks
 
-        if(task.includes(inputValue)) {
-            setInputValue("");
-            return;
-        }
-        setTask((prevTask) => [...prevTask, inputValue]);
+        // Check for duplicate content
+        const ifTodoContentMatched = task.find((curTask) => curTask.content === inputValue);
+        if (ifTodoContentMatched) return;
 
-        setInputValue("");
-    }
+        // Add new task
+        setTask((prevTask) => [
+            ...prevTask,
+            { id: Date.now(), content: inputValue, checked: false }
+        ]);
 
-    const handleDeleteTodo = (value) =>{
-        console.log(task);
-        console.log(value);
-        const updatedTask = task.filter((curTask)=> curTask !== value);
+        setInputValue(""); // Clear input after adding
+    };
+
+    // Handle task delete
+    const handleDeleteTodo = (id) => {
+        const updatedTask = task.filter((curTask) => curTask.id !== id);
         setTask(updatedTask);
-        
-    }
+    };
 
-    const handleClearAll = () =>{
+    // Handle task completion (toggle checked)
+    const handleToggleCheck = (id) => {
+        setTask((prevTask) =>
+            prevTask.map((curTask) =>
+                curTask.id === id ? { ...curTask, checked: !curTask.checked } : curTask
+            )
+        );
+    };
+
+    // Handle clearing all tasks
+    const handleClearAll = () => {
         setTask([]);
-    }
-    return(
+    };
+
+    return (
         <section className="todo-container">
             <header>
                 <h1>Todo list</h1>
@@ -44,34 +59,41 @@ export const Todo = () =>{
             <section className="form">
                 <form onSubmit={handleFormSubmit}>
                     <div>
-                        <input type="text" 
-                        className="todo-input" 
-                        autoComplete="off" 
-                        value={inputValue}
-                        onChange={(event) =>handleInputChange(event.target.value)}/>
+                        <input
+                            type="text"
+                            className="todo-input"
+                            autoComplete="off"
+                            value={inputValue}
+                            onChange={(event) => handleInputChange(event.target.value)}
+                        />
                     </div>
                     <div>
-                        <button type="submiit" className="todo-btn">Add Task</button>
+                        <button type="submit" className="todo-btn">
+                            Add Task
+                        </button>
                     </div>
                 </form>
                 <section>
                     <ul>
-                        {
-                            task.map((curTask, index) =>{
-                                return <li key={index} className="todo-item">
-                                    <span>{curTask}</span>
-                                    <button className="check-btn"><FaCheck /></button>
-                                    <button className="delete-btn" onClick={() => handleDeleteTodo(curTask)}><MdDelete /></button>
-                                    
-                                </li>
-                            })
-                        }
+                        {task.map((curTask) => (
+                            <li key={curTask.id} className={`todo-item ${curTask.checked ? "checked" : ""}`}>
+                                <span>{curTask.content}</span>
+                                <button className="check-btn" onClick={() => handleToggleCheck(curTask.id)}>
+                                    <FaCheck />
+                                </button>
+                                <button className="delete-btn" onClick={() => handleDeleteTodo(curTask.id)}>
+                                    <MdDelete />
+                                </button>
+                            </li>
+                        ))}
                     </ul>
                 </section>
             </section>
             <section>
-                <button onClick={handleClearAll} className="clear-all-btn">Clear All</button>
+                <button onClick={handleClearAll} className="clear-all-btn">
+                    Clear All
+                </button>
             </section>
         </section>
-    )
-}
+    );
+};
