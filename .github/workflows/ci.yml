@@ -1,3 +1,10 @@
+name: React App CI
+
+on:
+  push:
+    branches:
+      - main  # Trigger when pushing to the 'main' branch
+
 jobs:
   build:
     runs-on: ubuntu-latest
