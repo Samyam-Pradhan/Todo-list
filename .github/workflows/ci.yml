@@ -30,7 +30,7 @@ jobs:
 
       # Step 5 (Optional): Upload build artifacts (for debugging or deployment purposes)
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: ./dist  # Vite's default output folder is './dist'
