@@ -1,0 +1,36 @@
+name: React App CI
+
+on:
+  push:
+    branches:
+      - main  # Trigger when pushing to the 'main' branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Can be 'windows-latest' or 'macos-latest'
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # Make sure to match the version in your 'package.json'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Build the React app using Vite
+      - name: Build React app
+        run: npm run build  # This will use the Vite build script from your 'package.json'
+
+      # Step 5 (Optional): Upload build artifacts (for debugging or deployment purposes)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: ./dist  # Vite's default output folder is './dist'
