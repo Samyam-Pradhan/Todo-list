@@ -24,7 +24,5 @@ jobs:
 
       - name: Build and push App
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/todo-app
-          docker push ${{ secrets.DOCKER_USERNAME }}/todo-app
-
-      
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/todo-app:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
