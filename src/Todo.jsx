@@ -1,15 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 import "./components/Todo.css";
 
 export const Todo = () => {
     const [inputValue, setInputValue] = useState("");
-    const [task, setTask] = useState(()=>{
+
+    const [task, setTask] = useState(() => {
         const rawTodo = localStorage.getItem("reactTodo");
-        if(!rawTodo) return;
-        return JSON.parse(rawTodo);
+        try {
+            return rawTodo ? JSON.parse(rawTodo) : [];
+        } catch (error) {
+            console.error("Invalid JSON in localStorage:", error);
+            return [];
+        }
     });
+
+    // Save task list to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem("reactTodo", JSON.stringify(task));
+    }, [task]);
 
     // Handle input change
     const handleInputChange = (value) => {
@@ -18,21 +28,19 @@ export const Todo = () => {
 
     // Handle form submission
     const handleFormSubmit = (event) => {
-        event.preventDefault(); // Prevent page reload
+        event.preventDefault();
+        if (!inputValue.trim()) return;
 
-        if (!inputValue.trim()) return; // Prevent empty tasks
-
-        // Check for duplicate content
-        const ifTodoContentMatched = task.find((curTask) => curTask.content === inputValue);
+        const ifTodoContentMatched = task.find(
+            (curTask) => curTask.content === inputValue
+        );
         if (ifTodoContentMatched) return;
 
-        // Add new task
         setTask((prevTask) => [
             ...prevTask,
-            { id: Date.now(), content: inputValue, checked: false }
+            { id: Date.now(), content: inputValue, checked: false },
         ]);
-
-        setInputValue(""); // Clear input after adding
+        setInputValue("");
     };
 
     // Handle task delete
@@ -41,22 +49,21 @@ export const Todo = () => {
         setTask(updatedTask);
     };
 
-    // Handle task completion (toggle checked)
+    // Handle task completion
     const handleToggleCheck = (id) => {
         setTask((prevTask) =>
             prevTask.map((curTask) =>
-                curTask.id === id ? { ...curTask, checked: !curTask.checked } : curTask
+                curTask.id === id
+                    ? { ...curTask, checked: !curTask.checked }
+                    : curTask
             )
         );
     };
 
-    // Handle clearing all tasks
+    // Clear all tasks
     const handleClearAll = () => {
         setTask([]);
     };
-
-    //storing data in local storage
-    localStorage.setItem("reactTodo", JSON.stringify(task));
 
     return (
         <section className="todo-container">
@@ -83,12 +90,23 @@ export const Todo = () => {
                 <section>
                     <ul>
                         {task.map((curTask) => (
-                            <li key={curTask.id} className={`todo-item ${curTask.checked ? "checked" : ""}`}>
+                            <li
+                                key={curTask.id}
+                                className={`todo-item ${
+                                    curTask.checked ? "checked" : ""
+                                }`}
+                            >
                                 <span>{curTask.content}</span>
-                                <button className="check-btn" onClick={() => handleToggleCheck(curTask.id)}>
+                                <button
+                                    className="check-btn"
+                                    onClick={() => handleToggleCheck(curTask.id)}
+                                >
                                     <FaCheck />
                                 </button>
-                                <button className="delete-btn" onClick={() => handleDeleteTodo(curTask.id)}>
+                                <button
+                                    className="delete-btn"
+                                    onClick={() => handleDeleteTodo(curTask.id)}
+                                >
                                     <MdDelete />
                                 </button>
                             </li>

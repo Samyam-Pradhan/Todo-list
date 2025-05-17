@@ -1,0 +1,6 @@
+services:
+  todo-list:
+    image: todoapp:latest
+    ports:
+      - 80:80
+
