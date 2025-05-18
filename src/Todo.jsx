@@ -16,17 +16,14 @@ export const Todo = () => {
         }
     });
 
-    // Save task list to localStorage whenever it changes
     useEffect(() => {
         localStorage.setItem("reactTodo", JSON.stringify(task));
     }, [task]);
 
-    // Handle input change
     const handleInputChange = (value) => {
         setInputValue(value);
     };
 
-    // Handle form submission
     const handleFormSubmit = (event) => {
         event.preventDefault();
         if (!inputValue.trim()) return;
@@ -59,8 +56,6 @@ export const Todo = () => {
             )
         );
     };
-
-    // Clear all tasks
     const handleClearAll = () => {
         setTask([]);
     };
